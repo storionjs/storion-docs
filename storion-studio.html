@@ -30,6 +30,15 @@
       <h1>Storion Studio</h1>
       <p>Storion Studio is a Chrome extension that turns your browser's <strong>localStorage</strong> into a structured database you can manage with a visual UI—like pgAdmin for the browser. It uses the same data layout as the <code>@storion/storion</code> npm package, so you can use the extension as an admin console while your webapp uses the library.</p>
 
+      <h2>Links</h2>
+      <table>
+        <tr><th>Resource</th><th>Link</th></tr>
+        <tr><td>GitHub (extension)</td><td><a href="https://github.com/storionjs/storion-studio" target="_blank" rel="noopener">github.com/storionjs/storion-studio</a></td></tr>
+        <tr><td>Storion library (GitHub)</td><td><a href="https://github.com/storionjs/storion" target="_blank" rel="noopener">github.com/storionjs/storion</a></td></tr>
+        <tr><td>Storion library (npm)</td><td><a href="https://www.npmjs.com/package/@storion/storion" target="_blank" rel="noopener">npmjs.com/package/@storion/storion</a></td></tr>
+        <tr><td>Storion docs</td><td><a href="https://storionjs.github.io/storion-docs/" target="_blank" rel="noopener">storionjs.github.io/storion-docs/</a></td></tr>
+      </table>
+
       <h2>Features</h2>
       <ul>
         <li>Create, delete, and organize multiple databases</li>
@@ -43,12 +52,12 @@
 
       <h2>Installation</h2>
       <ol>
-        <li>Clone or download the Storion Studio extension folder</li>
-        <li>Open Chrome and go to <code>chrome://extensions/</code></li>
-        <li>Enable <strong>Developer mode</strong> (top-right)</li>
-        <li>Click <strong>Load unpacked</strong></li>
-        <li>Select the Storion Studio folder</li>
-        <li>The Storion Studio icon appears in your toolbar</li>
+        <li>Clone or download the Storion Studio repo from <a href="https://github.com/storionjs/storion-studio" target="_blank" rel="noopener">GitHub</a>.</li>
+        <li>Open Chrome and go to <code>chrome://extensions/</code> (Menu → More Tools → Extensions).</li>
+        <li>Enable <strong>Developer mode</strong> in the top-right corner.</li>
+        <li>Click <strong>Load unpacked</strong>.</li>
+        <li>Select the <code>Storion Studio</code> folder (the one containing <code>manifest.json</code>).</li>
+        <li>Verify the Storion Studio icon appears in your toolbar and the extension has no errors.</li>
       </ol>
 
       <h2>Quick start</h2>
@@ -59,6 +68,16 @@
         <li>Click <strong>+ Add Row</strong> to insert data; use the edit/delete icons on rows to update or remove</li>
         <li>Use the Query panel to filter and sort with the same JSON query format as <code>db.query()</code></li>
       </ol>
+
+      <h3>Example: users table in Studio</h3>
+      <p>For example, you might create a <code>users</code> table with columns like:</p>
+      <ul>
+        <li><code>id</code> – int</li>
+        <li><code>email</code> – string</li>
+        <li><code>name</code> – string</li>
+        <li><code>active</code> – boolean</li>
+      </ul>
+      <p>You can then insert rows in the grid and use the Query panel to find "all active users whose name contains 'smith'" using the same JSON query shape described in the <a href="query-language.html">Query language</a> docs.</p>
 
       <h2>Data storage</h2>
       <p>All data is stored in a single localStorage key: <code>__LS_DB__</code>. The structure matches what the Storion library uses, so databases you create in the extension are compatible with <code>createDatabase({ name: '...', storage: 'localStorage' })</code> in your app.</p>

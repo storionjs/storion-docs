@@ -80,6 +80,44 @@ await db.delete('users', 2);</code></pre>
 unsubscribe();</code></pre>
 
       <p>See <a href="api.html">API reference</a> and <a href="query-language.html">Query language</a> for full details.</p>
+
+      <h2>Common examples</h2>
+
+      <h3>Todo list using localStorage</h3>
+      <p>A minimal todo database stored entirely in <code>localStorage</code>:</p>
+      <pre><code>import { createDatabase } from '@storion/storion';
+
+const db = await createDatabase({
+  name: 'todo-app',
+  storage: 'localStorage'
+});
+
+await db.createTable('todos', [
+  { name: 'id', type: 'int' },
+  { name: 'title', type: 'string' },
+  { name: 'done', type: 'boolean' }
+]);
+
+await db.insert('todos', { title: 'Ship Storion docs', done: false });
+
+const openTodos = await db.fetch('todos', {
+  filter: { done: false },
+  sortBy: 'id'
+});</code></pre>
+
+      <h3>Admin-style querying</h3>
+      <p>Run a more expressive query over a "users" table, similar to what the query panel in Storion Studio does:</p>
+      <pre><code>const { rows, totalCount } = await db.query('users', {
+  where: {
+    and: [
+      { field: 'active', op: 'eq', value: true },
+      { field: 'name', op: 'contains', value: 'smith' }
+    ]
+  },
+  orderBy: [{ field: 'created_at', direction: 'desc' }],
+  limit: 20,
+  offset: 0
+});</code></pre>
     </main>
   </div>
   <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>
