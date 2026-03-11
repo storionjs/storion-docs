@@ -17,6 +17,7 @@
         <div class="brand">
           <img src="assets/logo.png" alt="Storion logo" class="brand-logo">
           <a href="index.html">Storion</a>
+          <button type="button" class="theme-toggle" aria-label="Toggle theme"></button>
         </div>
         <div class="nav-group">Getting started</div>
         <a href="index.html">Introduction</a>
@@ -24,100 +25,16 @@
         <div class="nav-group">Core docs</div>
         <a href="api.html">API reference</a>
         <a href="query-language.html">Query language</a>
+        <a href="crud-tables.html">CRUD &amp; tables</a>
+        <a href="sync.html">Change subscriptions &amp; sync</a>
         <a href="config-format.html">Config format</a>
+        <div class="nav-group">Tools</div>
+        <a href="storion-studio.html" class="active">Storion Studio</a>
       </div>
     </nav>
     <main class="docs-main">
       <h1>Storion Studio</h1>
-      <p>Storion Studio is a Chrome extension that turns your browser's <strong>localStorage</strong> into a structured database you can manage with a visual UI—like pgAdmin for the browser. It uses the same data layout as the <code>@storion/storion</code> npm package, so you can use the extension as an admin console while your webapp uses the library.</p>
-
-      <h2>Links</h2>
-      <table>
-        <tr><th>Resource</th><th>Link</th></tr>
-        <tr><td>GitHub (extension)</td><td><a href="https://github.com/storionjs/storion-studio" target="_blank" rel="noopener">github.com/storionjs/storion-studio</a></td></tr>
-        <tr><td>Storion library (GitHub)</td><td><a href="https://github.com/storionjs/storion" target="_blank" rel="noopener">github.com/storionjs/storion</a></td></tr>
-        <tr><td>Storion library (npm)</td><td><a href="https://www.npmjs.com/package/@storion/storion" target="_blank" rel="noopener">npmjs.com/package/@storion/storion</a></td></tr>
-        <tr><td>Storion docs</td><td><a href="https://storionjs.github.io/storion-docs/" target="_blank" rel="noopener">storionjs.github.io/storion-docs/</a></td></tr>
-      </table>
-
-      <h2>Features</h2>
-      <ul>
-        <li>Create, delete, and organize multiple databases</li>
-        <li>Create tables with custom columns and manage schema</li>
-        <li>Insert, read, update, and delete rows with a table grid</li>
-        <li>Query panel: filter and sort with the same JSON query language as Storion</li>
-        <li>Export/import databases as JSON</li>
-        <li>Real-time storage usage (5MB localStorage limit)</li>
-        <li>Optional: stream change events to your webapp via <code>postMessage</code> or Chrome messaging</li>
-      </ul>
-
-      <h2>Installation</h2>
-      <ol>
-        <li>Clone or download the Storion Studio repo from <a href="https://github.com/storionjs/storion-studio" target="_blank" rel="noopener">GitHub</a>.</li>
-        <li>Open Chrome and go to <code>chrome://extensions/</code> (Menu → More Tools → Extensions).</li>
-        <li>Enable <strong>Developer mode</strong> in the top-right corner.</li>
-        <li>Click <strong>Load unpacked</strong>.</li>
-        <li>Select the <code>Storion Studio</code> folder (the one containing <code>manifest.json</code>).</li>
-        <li>Verify the Storion Studio icon appears in your toolbar and the extension has no errors.</li>
-      </ol>
-
-      <h2>Quick start</h2>
-      <ol>
-        <li>Click the Storion Studio icon</li>
-        <li>Click <strong>+ New</strong> next to "Databases", name it (e.g. <code>myAppDB</code>), click Create</li>
-        <li>Select the database, click <strong>+ New</strong> next to "Tables", add a table (e.g. <code>users</code>) with columns</li>
-        <li>Click <strong>+ Add Row</strong> to insert data; use the edit/delete icons on rows to update or remove</li>
-        <li>Use the Query panel to filter and sort with the same JSON query format as <code>db.query()</code></li>
-      </ol>
-
-      <h3>Example: users table in Studio</h3>
-      <p>For example, you might create a <code>users</code> table with columns like:</p>
-      <ul>
-        <li><code>id</code> – int</li>
-        <li><code>email</code> – string</li>
-        <li><code>name</code> – string</li>
-        <li><code>active</code> – boolean</li>
-      </ul>
-      <p>You can then insert rows in the grid and use the Query panel to find "all active users whose name contains 'smith'" using the same JSON query shape described in the <a href="query-language.html">Query language</a> docs.</p>
-
-      <h2>Data storage</h2>
-      <p>All data is stored in a single localStorage key: <code>__LS_DB__</code>. The structure matches what the Storion library uses, so databases you create in the extension are compatible with <code>createDatabase({ name: '...', storage: 'localStorage' })</code> in your app.</p>
-
-      <h2>Using Storion Studio with your webapp</h2>
-      <p>Storion Studio models the same data layout as the <strong>@storion/storion</strong> package. You can use the extension as a separate "admin console" and stream change events to your webapp.</p>
-      <p>At the library level, Storion provides:</p>
-      <ul>
-        <li><strong>db.setChangeBroadcaster(broadcaster)</strong> – after each insert/update/delete/createTable/deleteTable, you can forward a normalized <code>StorionChangeEvent</code> to another context (e.g. via <code>chrome.tabs.sendMessage</code>, <code>postMessage</code>, or <code>BroadcastChannel</code>).</li>
-        <li><strong>createChangeListener(transport, onChange)</strong> – on the receiving side, subscribes to a custom transport and calls <code>onChange(event)</code> when a valid change event arrives.</li>
-      </ul>
-      <p>Example with <code>window.postMessage</code> (consumer in your webapp):</p>
-      <pre><code>import { createChangeListener } from '@storion/storion';
-
-const transport = {
-  onMessage(handler) {
-    function listener(ev) {
-      if (!ev.data || ev.data.source !== 'storion-change') return;
-      handler(ev.data.payload);
-    }
-    window.addEventListener('message', listener);
-    return () => window.removeEventListener('message', listener);
-  }
-};
-
-const stop = createChangeListener(transport, (event) => {
-  console.log('Change from Storion Studio:', event);
-  // e.g. refetch data or update local UI state
-});</code></pre>
-      <p>This wiring is optional: Storion Studio works offline by default; the extension can broadcast changes when you want to sync with a page that uses the Storion library.</p>
-
-      <h2>Limitations</h2>
-      <ul>
-        <li><strong>5MB storage limit</strong> – localStorage has a ~5MB limit per origin; the extension shows usage.</li>
-        <li><strong>Single origin</strong> – Data is isolated per origin (protocol + domain + port).</li>
-      </ul>
-
-      <h2>Query language in Studio</h2>
-      <p>The Query panel in Storion Studio uses the same JSON query format as <code>db.query()</code>: <code>where</code>, <code>orderBy</code>, <code>limit</code>, <code>offset</code>. See <a href="query-language.html">Query language</a> for full syntax and operators.</p>
+      <p><strong>Coming soon:</strong> This page will host dedicated docs for Storion Studio.</p>
     </main>
   </div>
   <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>

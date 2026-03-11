@@ -1,4 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Theme toggle (dark / light)
+  const root = document.documentElement;
+  const storedTheme = window.localStorage.getItem('storion-docs-theme');
+  if (storedTheme === 'light' || storedTheme === 'dark') {
+    root.setAttribute('data-theme', storedTheme === 'light' ? 'light' : 'dark');
+  }
+
+  function toggleTheme() {
+    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    if (next === 'light') {
+      root.setAttribute('data-theme', 'light');
+      window.localStorage.setItem('storion-docs-theme', 'light');
+    } else {
+      root.removeAttribute('data-theme');
+      window.localStorage.setItem('storion-docs-theme', 'dark');
+    }
+    const label = document.querySelector('.theme-toggle span');
+    if (label) {
+      label.textContent = root.getAttribute('data-theme') === 'light' ? 'Light mode' : 'Dark mode';
+    }
+  }
+
+  const themeToggle = document.querySelector('.theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
+  }
+
   // Mobile nav toggle
   const navToggle = document.querySelector('.nav-toggle');
   const docsNav = document.querySelector('.docs-nav');

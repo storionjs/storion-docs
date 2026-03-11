@@ -16,6 +16,20 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+:root[data-theme='light'] {
+  --bg: #ffffff;
+  --bg-card: #f3f4f6;
+  --bg-code: #f9fafb;
+  --border: #e5e7eb;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --accent: #0891b2;
+  --accent-dim: #0e7490;
+  --accent-soft: rgba(8, 145, 178, 0.12);
+  --green: #16a34a;
+  --orange: #ea580c;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -299,7 +313,6 @@ li {
 .docs-nav .brand {
   padding: 0.25rem 0.75rem 1rem;
   font-weight: 600;
-  font-size: 1rem;
   color: var(--text);
   display: flex;
   align-items: center;
@@ -308,6 +321,8 @@ li {
 
 .docs-nav .brand a {
   color: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .docs-nav .brand a:hover {
@@ -323,6 +338,36 @@ li {
   background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.2), transparent 60%);
   box-shadow: 0 0 0 1px rgba(15,23,42,0.5), 0 6px 14px rgba(0,0,0,0.4);
   object-fit: cover;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-left: auto;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.theme-toggle::before {
+  content: '🌙';
+}
+
+:root[data-theme='light'] .theme-toggle::before {
+  content: '☀';
+}
+
+.theme-toggle:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 /* Code example cards with copy button */

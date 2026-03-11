@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change subscriptions &amp; sync – Storion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/docs.js"></script>
+</head>
+<body>
+  <div class="docs-wrap">
+    <nav class="docs-nav">
+      <div class="docs-nav-inner">
+        <div class="brand">
+          <img src="assets/logo.png" alt="Storion logo" class="brand-logo">
+          <a href="index.html">Storion</a>
+          <button type="button" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+        <div class="nav-group">Getting started</div>
+        <a href="index.html">Introduction</a>
+        <a href="quick-start.html">Quick start</a>
+        <div class="nav-group">Core docs</div>
+        <a href="api.html">API reference</a>
+        <a href="query-language.html">Query language</a>
+        <a href="crud-tables.html">CRUD &amp; tables</a>
+        <a href="sync.html" class="active">Change subscriptions &amp; sync</a>
+        <a href="config-format.html">Config format</a>
+        <div class="nav-group">Tools</div>
+        <a href="storion-studio.html">Storion Studio</a>
+      </div>
+    </nav>
+    <main class="docs-main">
+      <h1>Change subscriptions &amp; sync</h1>
+      <p>These examples mirror the <strong>Change subscriptions &amp; sync</strong> section in Storion Studio’s documentation, showing how to keep UI and multiple contexts in sync without polling.</p>
+
+      <h2>Overview</h2>
+      <p>The Storion engine that powers Storion Studio supports <strong>change subscriptions</strong> and an optional <strong>cross-context hook</strong>. In your own app, you can subscribe to table or row changes so multiple components stay in sync when data is updated—without polling.</p>
+
+      <h2>Subscribe to table changes</h2>
+      <p>Use <code>db.subscribe</code> to listen to changes at different scopes:</p>
+      <ul>
+        <li><code>db.subscribe(callback)</code> – subscribe to all changes in this database.</li>
+        <li><code>db.subscribe(tableName, callback)</code> – subscribe only to changes for a table.</li>
+        <li><code>db.subscribe(tableName, rowId, callback)</code> – subscribe only to changes for a specific row.</li>
+      </ul>
+
+      <h3>Example: subscribe to all changes in a table</h3>
+      <pre><code>import { createDatabase } from '@storion/storion';
+
+const db = await createDatabase({ name: 'myapp', storage: 'localStorage' });
+
+// Subscribe to all changes in the "todos" table
+const unsubscribe = db.subscribe('todos', (event) => {
+  console.log(event.type, event.row); // 'insert' | 'update' | 'delete' | 'tableCreated' | 'tableDeleted'
+  // Refresh your UI or state here
+});
+
+// later:
+unsubscribe();</code></pre>
+
+      <h3>Change event shape</h3>
+      <pre><code>type StorionChangeEvent = {
+  type: 'insert' | 'update' | 'delete' | 'tableCreated' | 'tableDeleted';
+  dbName: string;
+  tableName: string;
+  row?: any;          // inserted/updated row (current state)
+  rowId?: number;     // id of the row (for update/delete)
+  previousRow?: any;  // for update/delete, the row before the change
+};</code></pre>
+
+      <h2>Cross-context sync (extension ↔ webapp)</h2>
+      <p>For advanced setups, Storion can act as the <strong>source of truth</strong> in one context (for example, a Chrome extension) and stream change events to another context (for example, a webapp) over a custom transport.</p>
+      <p>The library provides <code>db.setChangeBroadcaster</code> on the producer side and <code>createChangeListener</code> on the receiver side.</p>
+
+      <h3>Producer: broadcast changes with <code>db.setChangeBroadcaster</code></h3>
+      <pre><code>// Producer side (e.g. extension popup/background)
+db.setChangeBroadcaster({
+  broadcastChange(event) {
+    window.postMessage({ source: 'storion-change', payload: event }, '*');
+  }
+});</code></pre>
+
+      <h3>Consumer: receive changes with <code>createChangeListener</code></h3>
+      <pre><code>import { createChangeListener } from '@storion/storion';
+
+const transport = {
+  onMessage(handler) {
+    function listener(ev) {
+      if (!ev.data || ev.data.source !== 'storion-change') return;
+      handler(ev.data.payload);
+    }
+    window.addEventListener('message', listener);
+    return () => window.removeEventListener('message', listener);
+  }
+};
+
+const stop = createChangeListener(transport, (event) => {
+  console.log('Received change from another context:', event);
+  // e.g. refetch data or update local UI state
+});</code></pre>
+
+      <p>This wiring is <strong>optional</strong>: Storion works offline by default. Use cross-context sync when you want a separate admin UI (such as Storion Studio) to drive live changes in your app.</p>
+    </main>
+  </div>
+  <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>
+</body>
+</html>
+

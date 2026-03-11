@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD &amp; tables – Storion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/docs.js"></script>
+</head>
+<body>
+  <div class="docs-wrap">
+    <nav class="docs-nav">
+      <div class="docs-nav-inner">
+        <div class="brand">
+          <img src="assets/logo.png" alt="Storion logo" class="brand-logo">
+          <a href="index.html">Storion</a>
+          <button type="button" class="theme-toggle" aria-label="Toggle theme"></button>
+        </div>
+        <div class="nav-group">Getting started</div>
+        <a href="index.html">Introduction</a>
+        <a href="quick-start.html">Quick start</a>
+        <div class="nav-group">Core docs</div>
+        <a href="api.html">API reference</a>
+        <a href="query-language.html">Query language</a>
+        <a href="crud-tables.html" class="active">CRUD &amp; tables</a>
+        <a href="sync.html">Change subscriptions &amp; sync</a>
+        <a href="config-format.html">Config format</a>
+        <div class="nav-group">Tools</div>
+        <a href="storion-studio.html">Storion Studio</a>
+      </div>
+    </nav>
+    <main class="docs-main">
+      <h1>CRUD &amp; tables</h1>
+      <p>These examples mirror the <strong>CRUD &amp; tables</strong> section in Storion Studio’s documentation, adapted for both the visual UI and the <code>@storion/storion</code> API.</p>
+
+      <h2>Create database</h2>
+      <p>Create a new database from the sidebar. Each database is a separate namespace for tables. Choose a name (for example, <code>myAppDB</code>) and click <strong>Create</strong>.</p>
+
+      <h3>In the Studio UI</h3>
+      <pre><code>1. Click "+ New" under Databases
+2. Enter database name (e.g. myAppDB)
+3. Click Create</code></pre>
+
+      <h3>In your app code</h3>
+      <pre><code>import { createDatabase } from '@storion/storion';
+
+const db = await createDatabase({
+  name: 'myAppDB',
+  storage: 'localStorage'
+});</code></pre>
+
+      <h2>Create table</h2>
+      <p>After selecting a database, create a table with columns. Each column has a name and a type: <code>int</code>, <code>float</code>, <code>boolean</code>, <code>string</code>, or <code>json</code>.</p>
+      <p>An <code>id</code> column (integer, auto-generated) is added if you do not define it. You can optionally set a foreign key reference to another table.</p>
+
+      <h3>Example columns</h3>
+      <pre><code>name   → type: string
+email  → type: string
+active → type: boolean
+amount → type: float
+meta   → type: json
+Optional: reference another table (e.g. user_id → users.id)</code></pre>
+
+      <h3>In your app code</h3>
+      <pre><code>await db.createTable('users', [
+  { name: 'id', type: 'int' },
+  { name: 'email', type: 'string' },
+  { name: 'name', type: 'string' },
+  { name: 'active', type: 'boolean' },
+  { name: 'meta', type: 'json' }
+]);</code></pre>
+
+      <h2>Insert row</h2>
+      <p>When viewing a table, click <strong>+ Add Row</strong>. Fill in values for each column. The <code>id</code> column is auto-generated if left empty. Values are validated and coerced to the column type (for example, <code>json</code> columns accept valid JSON text).</p>
+
+      <h3>In the Studio UI</h3>
+      <pre><code>1. Open a table
+2. Click "+ Add Row"
+3. Fill in values (id is auto-generated if empty)
+4. Click Save</code></pre>
+
+      <h3>In your app code</h3>
+      <pre><code>await db.insert('users', {
+  email: 'alice@example.com',
+  name: 'Alice',
+  active: true,
+  meta: { plan: 'pro' }
+});</code></pre>
+
+      <h2>Fetch rows</h2>
+      <p>Opening a table loads all its rows. Use the Query panel in Storion Studio to filter and sort. The table view shows paginated results (for example, 50 per page). Row count and pagination are shown at the bottom.</p>
+
+      <h3>Studio steps</h3>
+      <pre><code>1. Select a database, then a table
+2. All rows are loaded; use Query panel to filter/sort
+3. Use where, orderBy, limit, offset in the query JSON</code></pre>
+
+      <h3>In your app code</h3>
+      <pre><code>const allRows = await db.fetch('users');
+
+const recentActive = await db.query('users', {
+  where: { field: 'active', op: 'eq', value: true },
+  orderBy: [{ field: 'created_at', direction: 'desc' }],
+  limit: 50,
+  offset: 0
+});</code></pre>
+
+      <h2>Update row</h2>
+      <p>Click the edit (pencil) icon on a row to change its values. You cannot change the <code>id</code>. Other columns are validated and coerced to their types.</p>
+
+      <h3>In the Studio UI</h3>
+      <pre><code>1. Find the row in the table
+2. Click the edit (pencil) icon
+3. Change values in the form
+4. Click Save</code></pre>
+
+      <h3>In your app code</h3>
+      <pre><code>await db.update('users', 1, {
+  name: 'Alice Smith',
+  active: false
+});</code></pre>
+
+      <h2>Delete row</h2>
+      <p>Click the delete (trash) icon on a row to remove it. If another table has a foreign key pointing to this row, the delete may be blocked to keep referential integrity.</p>
+
+      <h3>In the Studio UI</h3>
+      <pre><code>1. Find the row in the table
+2. Click the delete (trash) icon
+3. Confirm deletion</code></pre>
+
+      <h3>In your app code</h3>
+      <pre><code>await db.delete('users', 1);</code></pre>
+
+      <h2>Column types</h2>
+      <p>Supported column types:</p>
+      <pre><code>int     → integer
+float   → number
+boolean → true / false
+string  → text
+json    → object or array (stored and compared as JSON)</code></pre>
+      <p>For <code>json</code> columns, query operators work on the stringified form; in the table view and edit form, values are shown as formatted JSON.</p>
+    </main>
+  </div>
+  <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>
+</body>
+</html>
+
