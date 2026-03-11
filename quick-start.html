@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick start – Storion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="docs-wrap">
+    <nav class="docs-nav">
+      <div class="docs-nav-inner">
+        <div class="brand"><a href="index.html">Storion</a></div>
+        <div class="nav-group">Getting started</div>
+        <a href="index.html">Introduction</a>
+        <a href="quick-start.html" class="active">Quick start</a>
+        <div class="nav-group">Core docs</div>
+        <a href="api.html">API reference</a>
+        <a href="query-language.html">Query language</a>
+        <a href="config-format.html">Config format</a>
+      </div>
+    </nav>
+    <main class="docs-main">
+      <h1>Quick start</h1>
+
+      <h2>Install</h2>
+      <pre><code>npm install @storion/storion</code></pre>
+      <p>npm: <a href="https://www.npmjs.com/package/@storion/storion">@storion/storion</a></p>
+
+      <h2>Create a database</h2>
+      <p>Create or connect to a database using <code>localStorage</code>, <code>sessionStorage</code>, or <code>indexedDB</code>.</p>
+      <pre><code>import { createDatabase } from '@storion/storion';
+
+const db = await createDatabase({
+  name: 'myapp',
+  storage: 'localStorage'
+});</code></pre>
+
+      <h2>Create a table</h2>
+      <pre><code>await db.createTable('users', [
+  { name: 'id', type: 'int' },
+  { name: 'email', type: 'string' },
+  { name: 'name', type: 'string' },
+  { name: 'active', type: 'boolean' }
+]);</code></pre>
+      <p>If you omit <code>id</code>, an auto-increment integer <code>id</code> column is added.</p>
+
+      <h2>Insert rows</h2>
+      <pre><code>await db.insert('users', { email: 'alice@example.com', name: 'Alice', active: true });
+await db.insert('users', { email: 'bob@example.com', name: 'Bob', active: false });</code></pre>
+
+      <h2>Fetch and query</h2>
+      <pre><code>const all = await db.fetch('users');
+const active = await db.fetch('users', { filter: { active: true }, sortBy: 'name', limit: 10 });
+
+const { rows, totalCount } = await db.query('users', {
+  where: { field: 'active', op: 'eq', value: true },
+  orderBy: [{ field: 'name', direction: 'asc' }],
+  limit: 20,
+  offset: 0
+});</code></pre>
+
+      <h2>Update and delete</h2>
+      <pre><code>await db.update('users', 1, { name: 'Alice Smith' });
+await db.delete('users', 2);</code></pre>
+
+      <h2>Subscribe to changes</h2>
+      <p>When multiple components share the same <code>Database</code> instance, subscribe to change events so they stay in sync without polling.</p>
+      <pre><code>const unsubscribe = db.subscribe('users', (event) => {
+  console.log(event.type, event.row); // 'insert' | 'update' | 'delete' | 'tableCreated' | 'tableDeleted'
+});
+
+// When done:
+unsubscribe();</code></pre>
+
+      <p>See <a href="api.html">API reference</a> and <a href="query-language.html">Query language</a> for full details.</p>
+    </main>
+  </div>
+  <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>
+  <script>
+    document.querySelector('.nav-toggle').addEventListener('click', function () {
+      document.querySelector('.docs-nav').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Query language – Storion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="docs-wrap">
+    <nav class="docs-nav">
+      <div class="docs-nav-inner">
+        <div class="brand"><a href="index.html">Storion</a></div>
+        <div class="nav-group">Getting started</div>
+        <a href="index.html">Introduction</a>
+        <a href="quick-start.html">Quick start</a>
+        <div class="nav-group">Core docs</div>
+        <a href="api.html">API reference</a>
+        <a href="query-language.html" class="active">Query language</a>
+        <a href="config-format.html">Config format</a>
+      </div>
+    </nav>
+    <main class="docs-main">
+      <h1>Query language</h1>
+      <p>Storion uses a <strong>JSON query object</strong> to filter and sort table data. Use it with <code>db.query(tableName, query)</code>.</p>
+
+      <h2>Query structure</h2>
+      <pre><code>{
+  "where": { ... },
+  "orderBy": [ ... ],
+  "limit": 1000,
+  "offset": 0
+}</code></pre>
+      <table>
+        <thead>
+          <tr><th>Key</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>where</code></td><td>object</td><td>Optional. Filter conditions. Omit or <code>null</code> = no filter.</td></tr>
+          <tr><td><code>orderBy</code></td><td>array</td><td>Optional. Sort by one or more columns.</td></tr>
+          <tr><td><code>limit</code></td><td>number</td><td>Optional. Max rows (non-negative integer).</td></tr>
+          <tr><td><code>offset</code></td><td>number</td><td>Optional. Skip N rows (non-negative integer).</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Where clause</h2>
+      <p><code>where</code> can be:</p>
+      <ol>
+        <li><strong>A single condition</strong> – <code>{ "field": "columnName", "op": "eq", "value": 42 }</code></li>
+        <li><strong>Logic node</strong> – <code>{ "and": [ ... ] }</code> or <code>{ "or": [ ... ] }</code> (arrays of conditions or nested logic).</li>
+      </ol>
+
+      <h3>Operators</h3>
+      <table>
+        <thead>
+          <tr><th>Operator</th><th>Description</th><th><code>value</code> required</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>eq</code></td><td>Equals</td><td>Yes (except null)</td></tr>
+          <tr><td><code>ne</code></td><td>Not equals</td><td>Yes</td></tr>
+          <tr><td><code>gt</code></td><td>Greater than</td><td>Yes</td></tr>
+          <tr><td><code>gte</code></td><td>Greater than or equal</td><td>Yes</td></tr>
+          <tr><td><code>lt</code></td><td>Less than</td><td>Yes</td></tr>
+          <tr><td><code>lte</code></td><td>Less than or equal</td><td>Yes</td></tr>
+          <tr><td><code>contains</code></td><td>String contains (case-insensitive)</td><td>Yes</td></tr>
+          <tr><td><code>startsWith</code></td><td>String starts with (case-insensitive)</td><td>Yes</td></tr>
+          <tr><td><code>endsWith</code></td><td>String ends with (case-insensitive)</td><td>Yes</td></tr>
+          <tr><td><code>in</code></td><td>Value in list</td><td>Yes (array)</td></tr>
+          <tr><td><code>notIn</code></td><td>Value not in list</td><td>Yes (array)</td></tr>
+          <tr><td><code>isNull</code></td><td>Value is null/undefined</td><td>No</td></tr>
+          <tr><td><code>isNotNull</code></td><td>Value is not null/undefined</td><td>No</td></tr>
+        </tbody>
+      </table>
+      <p>String comparisons are <strong>case-insensitive</strong>. For <code>json</code> columns, comparisons use the JSON string representation.</p>
+
+      <h2>OrderBy</h2>
+      <p>Array of <code>{ "field": "columnName", "direction": "asc" | "desc" }</code>. Multiple columns supported; earlier entries have higher priority.</p>
+
+      <h2>Example with db.query()</h2>
+      <pre><code>const { rows, totalCount } = await db.query('users', {
+  where: {
+    and: [
+      { field: 'status', op: 'eq', value: 'active' },
+      { field: 'name', op: 'contains', value: 'smith' }
+    ]
+  },
+  orderBy: [
+    { field: 'created_at', direction: 'desc' },
+    { field: 'id', direction: 'asc' }
+  ],
+  limit: 20,
+  offset: 0
+});</code></pre>
+      <p>Returns <code>{ rows: [...], totalCount: number }</code>.</p>
+
+      <h2>Sample queries</h2>
+
+      <h3>No filter (show all rows)</h3>
+      <pre><code>{}</code></pre>
+
+      <h3>Single condition: name contains "foo"</h3>
+      <pre><code>{
+  "where": {
+    "field": "name",
+    "op": "contains",
+    "value": "foo"
+  }
+}</code></pre>
+
+      <h3>AND: multiple conditions</h3>
+      <pre><code>{
+  "where": {
+    "and": [
+      { "field": "status", "op": "eq", "value": "active" },
+      { "field": "name", "op": "contains", "value": "smith" }
+    ]
+  }
+}</code></pre>
+
+      <h3>OR: status is "active" or "pending"</h3>
+      <pre><code>{
+  "where": {
+    "or": [
+      { "field": "status", "op": "eq", "value": "active" },
+      { "field": "status", "op": "eq", "value": "pending" }
+    ]
+  }
+}</code></pre>
+
+      <h3>In list: status in ["active", "pending", "draft"]</h3>
+      <pre><code>{
+  "where": {
+    "field": "status",
+    "op": "in",
+    "value": ["active", "pending", "draft"]
+  }
+}</code></pre>
+
+      <h3>Null check: email is null</h3>
+      <pre><code>{
+  "where": {
+    "field": "email",
+    "op": "isNull"
+  }
+}</code></pre>
+
+      <h3>Full example: filter + sort + limit/offset</h3>
+      <pre><code>{
+  "where": {
+    "and": [
+      { "field": "status", "op": "eq", "value": "active" },
+      { "field": "name", "op": "contains", "value": "smith" }
+    ]
+  },
+  "orderBy": [
+    { "field": "created_at", "direction": "desc" },
+    { "field": "id", "direction": "asc" }
+  ],
+  "limit": 100,
+  "offset": 0
+}</code></pre>
+    </main>
+  </div>
+  <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>
+  <script>
+    document.querySelector('.nav-toggle').addEventListener('click', function () {
+      document.querySelector('.docs-nav').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

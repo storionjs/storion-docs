@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storion – Client-side database for the browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="docs-wrap">
+    <nav class="docs-nav">
+      <div class="docs-nav-inner">
+        <div class="brand"><a href="index.html">Storion</a></div>
+        <div class="nav-group">Getting started</div>
+        <a href="index.html" class="active">Introduction</a>
+        <a href="quick-start.html">Quick start</a>
+        <div class="nav-group">Core docs</div>
+        <a href="api.html">API reference</a>
+        <a href="query-language.html">Query language</a>
+        <a href="config-format.html">Config format</a>
+      </div>
+    </nav>
+    <main class="docs-main">
+      <header class="hero">
+        <h1>Storion</h1>
+        <p class="tagline">Framework-agnostic client-side database for the browser. Use it with React, Vue, Angular, Svelte, or vanilla JS.</p>
+        <p>Create databases, tables, save and fetch records, and run JSON queries on <strong>localStorage</strong>, <strong>sessionStorage</strong>, or <strong>IndexedDB</strong>.</p>
+        <code class="install">npm install @storion/storion</code>
+      </header>
+
+      <h2>Features</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <strong>Framework-agnostic</strong>
+          <p>Works with any frontend; no framework-specific code.</p>
+        </div>
+        <div class="feature-card">
+          <strong>Multiple stores</strong>
+          <p>Use localStorage, sessionStorage, or indexedDB.</p>
+        </div>
+        <div class="feature-card">
+          <strong>Tables & schema</strong>
+          <p>Define tables with columns (int, float, boolean, string, json) and optional foreign keys.</p>
+        </div>
+        <div class="feature-card">
+          <strong>CRUD + queries</strong>
+          <p>Insert, fetch, update, delete; run JSON queries with where, orderBy, limit, offset.</p>
+        </div>
+        <div class="feature-card">
+          <strong>Config from file/URL</strong>
+          <p>Create a database from a config object or load config from a URL or file.</p>
+        </div>
+        <div class="feature-card">
+          <strong>Change subscription</strong>
+          <p>Subscribe to table or row changes so components stay in sync without polling.</p>
+        </div>
+        <div class="feature-card">
+          <strong>Cross-context</strong>
+          <p>Optional broadcaster + listener for extensions, background scripts, or multiple tabs.</p>
+        </div>
+      </div>
+
+      <h2>Quick example</h2>
+      <pre><code>import { createDatabase } from '@storion/storion';
+
+const db = await createDatabase({
+  name: 'myapp',
+  storage: 'localStorage'
+});
+
+await db.createTable('users', [
+  { name: 'id', type: 'int' },
+  { name: 'email', type: 'string' },
+  { name: 'name', type: 'string' },
+  { name: 'active', type: 'boolean' }
+]);
+
+await db.insert('users', { email: 'alice@example.com', name: 'Alice', active: true });
+const { rows, totalCount } = await db.query('users', {
+  where: { field: 'active', op: 'eq', value: true },
+  orderBy: [{ field: 'name', direction: 'asc' }],
+  limit: 20,
+  offset: 0
+});</code></pre>
+
+      <h2>Documentation</h2>
+      <ul>
+        <li><a href="quick-start.html">Quick start</a> – Install and first steps</li>
+        <li><a href="api.html">API reference</a> – createDatabase, Database methods, helpers</li>
+        <li><a href="query-language.html">Query language</a> – where, orderBy, operators, examples</li>
+        <li><a href="config-format.html">Config format</a> – Define tables and databases in JSON</li>
+      </ul>
+
+      <h2>Links</h2>
+      <table>
+        <tr><th>Resource</th><th>URL</th></tr>
+        <tr><td>GitHub</td><td><a href="https://github.com/storionjs/storion" target="_blank" rel="noopener">github.com/storionjs/storion</a></td></tr>
+        <tr><td>npm</td><td><a href="https://www.npmjs.com/package/@storion/storion" target="_blank" rel="noopener">npmjs.com/package/@storion/storion</a></td></tr>
+        <tr><td>Issues</td><td><a href="https://github.com/storionjs/storion/issues" target="_blank" rel="noopener">GitHub Issues</a></td></tr>
+        <tr><td>License</td><td>MIT</td></tr>
+      </table>
+    </main>
+  </div>
+  <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>
+  <script>
+    document.querySelector('.nav-toggle').addEventListener('click', function () {
+      document.querySelector('.docs-nav').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
