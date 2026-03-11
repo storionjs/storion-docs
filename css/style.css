@@ -324,3 +324,69 @@ li {
   box-shadow: 0 0 0 1px rgba(15,23,42,0.5), 0 6px 14px rgba(0,0,0,0.4);
   object-fit: cover;
 }
+
+/* Code example cards with copy button */
+.code-example {
+  margin: 1.25rem 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(to bottom right, rgba(34, 211, 238, 0.06), transparent 55%), var(--bg-card);
+  overflow: hidden;
+}
+
+.code-example-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(12, 10, 24, 0.9);
+}
+
+.code-example-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.code-example-copy {
+  border: 1px solid var(--border);
+  background: rgba(12, 10, 24, 0.9);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.code-example-copy:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.code-example-copy.copied {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.code-example-body {
+  background: #111827; /* softer slate background for examples */
+}
+
+.code-example-body pre {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+}
+
+.code-example-body pre code {
+  color: var(--accent);
+}
