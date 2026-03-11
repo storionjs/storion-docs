@@ -300,6 +300,9 @@ li {
   font-weight: 600;
   font-size: 1rem;
   color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .docs-nav .brand a {
@@ -309,4 +312,14 @@ li {
 .docs-nav .brand a:hover {
   background: none;
   text-decoration: none;
+}
+
+.brand-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px; /* rounded square */
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.2), transparent 60%);
+  box-shadow: 0 0 0 1px rgba(15,23,42,0.6), 0 10px 20px rgba(0,0,0,0.45);
+  object-fit: cover;
 }
