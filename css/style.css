@@ -70,6 +70,40 @@ body {
   padding: 0 1.25rem;
 }
 
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-name {
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand-name:hover {
+  color: var(--accent);
+}
+
+.nav-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nav-section .nav-link {
+  display: block;
+  padding-left: 1.5rem;
+}
+
 .docs-nav a {
   display: block;
   padding: 0.4rem 0.75rem;

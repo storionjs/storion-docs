@@ -14,28 +14,41 @@
   <div class="docs-wrap">
     <nav class="docs-nav">
       <div class="docs-nav-inner">
-        <div class="brand">
-          <img src="assets/logo.png" alt="Storion logo" class="brand-logo">
-          <a href="index.html">Storion</a>
+        <div class="brand-row">
+          <div class="brand">
+            <img src="assets/logo.png" alt="Storion logo" class="brand-logo">
+            <a href="index.html" class="brand-name">Storion</a>
+          </div>
           <button type="button" class="theme-toggle" aria-label="Toggle theme"></button>
         </div>
-        <div class="nav-group">Getting started</div>
-        <a href="index.html" class="active">Introduction</a>
-        <a href="quick-start.html">Quick start</a>
-        <div class="nav-group">Core docs</div>
-        <a href="api.html">API reference</a>
-        <a href="query-language.html">Query language</a>
-        <a href="crud-tables.html">CRUD &amp; tables</a>
-        <a href="sync.html">Change subscriptions &amp; sync</a>
-        <a href="config-format.html">Config format</a>
-        <div class="nav-group">Tools</div>
-        <a href="storion-studio.html">Storion Studio</a>
+
+        <div class="nav-sections">
+          <div class="nav-section">
+            <div class="nav-group">Getting started</div>
+            <a href="index.html" class="nav-link active">Introduction</a>
+            <a href="quick-start.html" class="nav-link">Quick start</a>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-group">Core docs</div>
+            <a href="api.html" class="nav-link">API reference</a>
+            <a href="query-language.html" class="nav-link">Query language</a>
+            <a href="crud-tables.html" class="nav-link">CRUD &amp; tables</a>
+            <a href="sync.html" class="nav-link">Change subscriptions &amp; sync</a>
+            <a href="config-format.html" class="nav-link">Config format</a>
+          </div>
+
+          <div class="nav-section">
+            <div class="nav-group">Tools</div>
+            <a href="storion-studio.html" class="nav-link">Storion Studio</a>
+          </div>
+        </div>
       </div>
     </nav>
     <main class="docs-main">
       <header class="hero">
         <h1>Storion</h1>
-        <p class="tagline">Framework-agnostic client-side database for the browser. Use it with React, Vue, Angular, Svelte, or vanilla JS.</p>
+        <p class="tagline">Storion is a framework-agnostic, in-browser database that lets you define tables and run JSON-style queries on data stored in localStorage, sessionStorage, or IndexedDB</p>
         <p>Create databases, tables, save and fetch records, and run JSON queries on <strong>localStorage</strong>, <strong>sessionStorage</strong>, or <strong>IndexedDB</strong>.</p>
         <code class="install">npm install @storion/storion</code>
       </header>
