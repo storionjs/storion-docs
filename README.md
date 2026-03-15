@@ -8,6 +8,7 @@ Storion is a **framework-agnostic client-side database** for the browser. It pow
 
 - **Storion (library)**: [github.com/storionjs/storion](https://github.com/storionjs/storion)
 - **npm**: [@storion/storion](https://www.npmjs.com/package/@storion/storion)
+- **Storion Studio (Chrome extension)**: [Chrome Web Store](https://chromewebstore.google.com/detail/nhjidnpjlfnejdakbiccdhmphankkocm?utm_source=item-share-cb)
 
 ---
 

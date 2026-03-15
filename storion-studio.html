@@ -47,7 +47,64 @@
     </nav>
     <main class="docs-main">
       <h1>Storion Studio</h1>
-      <p><strong>Coming soon:</strong> This page will host dedicated docs for Storion Studio.</p>
+      <p>Storion Studio is a <strong>Chrome extension</strong> that gives you a visual database manager for <code>localStorage</code>, <code>sessionStorage</code>, and IndexedDB—think pgAdmin for the browser. Inspect, edit, and manage client-side data with a clean UI. No backend required.</p>
+
+      <h2>Install the Chrome extension</h2>
+      <p>Install from the Chrome Web Store (recommended):</p>
+      <ul>
+        <li><a href="https://chromewebstore.google.com/detail/nhjidnpjlfnejdakbiccdhmphankkocm?utm_source=item-share-cb" target="_blank" rel="noopener">Storion Studio on Chrome Web Store</a></li>
+      </ul>
+      <p>Or load the extension from source: clone <a href="https://github.com/storionjs/storion-studio" target="_blank" rel="noopener">storionjs/storion-studio</a>, open <code>chrome://extensions/</code>, enable <strong>Developer mode</strong>, then <strong>Load unpacked</strong> and select the folder containing <code>manifest.json</code>.</p>
+
+      <h2>Playground: no-code data management</h2>
+      <p>Storion Studio includes a <strong>playground</strong> that lets you work with client-side data entirely through the UI—no code required. It’s a handy tool for developers who want to:</p>
+      <ul>
+        <li><strong>Create databases and tables</strong> – Define schemas, add columns, and organize data by project or app, all from the extension.</li>
+        <li><strong>Add, edit, and delete rows</strong> – Use the table grid to insert and update data visually instead of writing <code>db.insert</code> or <code>db.update</code> calls.</li>
+        <li><strong>Export and import data</strong> – Backup entire databases as JSON or restore from a backup with one click. Great for fixtures, migrations, or sharing sample data.</li>
+      </ul>
+      <p>You can prototype a schema, seed test data, and then connect your app to the same database via <code>@storion/storion</code>—or use the playground to inspect and tweak data that your app has already written. No scripts, no REPL: everything happens in the extension UI.</p>
+
+      <h2>What you can do</h2>
+      <ul>
+        <li><strong>Manage multiple databases</strong> – Create, rename, and delete databases; keep data organized by project or app.</li>
+        <li><strong>Design tables</strong> – Define table schemas (id is always included), add columns (<code>int</code>, <code>float</code>, <code>boolean</code>, <code>string</code>, <code>json</code>), and adjust structure as your app evolves.</li>
+        <li><strong>Full CRUD in a table grid</strong> – Insert, view, edit, and delete rows in a spreadsheet-like grid with pagination.</li>
+        <li><strong>Run SQL-like queries</strong> – Use the built-in query engine with the same JSON query language as <code>db.query()</code> (see <a href="query-language.html">Query language</a>).</li>
+        <li><strong>Export and import</strong> – Backup entire databases as JSON or restore from a backup. Useful for migrating data or sharing fixtures.</li>
+        <li><strong>Monitor storage usage</strong> – See real-time usage against the 5MB <code>localStorage</code> limit.</li>
+        <li><strong>Sync with your web app (optional)</strong> – Built on the Storion engine; if your site uses <code>@storion/storion</code>, you can stream change events between the extension and your app for a seamless admin experience.</li>
+      </ul>
+
+      <h2>Using Storion Studio with your app</h2>
+      <p>Storion Studio uses the <strong>same data layout</strong> as the <code>@storion/storion</code> npm package (by default under the <code>__LS_DB__</code> key in <code>localStorage</code>). So you can:</p>
+      <ul>
+        <li>Prototype or inspect data in Storion Studio, then point your app at the same database name and storage.</li>
+        <li>Use the extension as an admin console while your web app uses the library for reads and writes.</li>
+      </ul>
+      <p>Example: create a database named <code>myapp</code> in Storion Studio, then in your app:</p>
+      <pre><code>import { createDatabase } from '@storion/storion';
+
+const db = await createDatabase({
+  name: 'myapp',
+  storage: 'localStorage'
+});
+// Same data is visible in both the extension and your app</code></pre>
+
+      <h2>Live sync (extension ↔ webapp)</h2>
+      <p>For live updates from Storion Studio into your app (or the other way around), use the <strong>cross-context sync</strong> APIs:</p>
+      <ul>
+        <li>On the side that makes changes (e.g. the extension): <code>db.setChangeBroadcaster({ broadcastChange(event) { ... } })</code>.</li>
+        <li>On the side that receives changes (e.g. your page): <code>createChangeListener(transport, onChange)</code> with a custom transport (e.g. <code>postMessage</code>, Chrome messaging).</li>
+      </ul>
+      <p>Full details and code samples: <a href="sync.html">Change subscriptions &amp; sync</a>.</p>
+
+      <h2>Links</h2>
+      <ul>
+        <li><strong>Chrome Web Store:</strong> <a href="https://chromewebstore.google.com/detail/nhjidnpjlfnejdakbiccdhmphankkocm?utm_source=item-share-cb" target="_blank" rel="noopener">Storion Studio</a></li>
+        <li><strong>Extension source:</strong> <a href="https://github.com/storionjs/storion-studio" target="_blank" rel="noopener">github.com/storionjs/storion-studio</a></li>
+        <li><strong>Storion library:</strong> <a href="https://www.npmjs.com/package/@storion/storion" target="_blank" rel="noopener">@storion/storion</a> on npm</li>
+      </ul>
     </main>
   </div>
   <button class="nav-toggle" type="button" aria-label="Toggle menu">Menu</button>
