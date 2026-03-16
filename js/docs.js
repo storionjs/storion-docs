@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Page footer: Rahul Singh + LinkedIn
+  const main = document.querySelector('.docs-main');
+  if (main) {
+    const footer = document.createElement('footer');
+    footer.className = 'docs-page-footer';
+    footer.innerHTML = '<hr class="docs-footer-sep">' +
+      '<p class="docs-footer-credit">Made by Rahul Singh · <a href="https://www.linkedin.com/in/rahulsingh91/" target="_blank" rel="noopener">LinkedIn</a></p>';
+    main.appendChild(footer);
+  }
+
   // Theme toggle (dark / light)
   const root = document.documentElement;
   const storedTheme = window.localStorage.getItem('storion-docs-theme');

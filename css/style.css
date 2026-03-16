@@ -469,3 +469,29 @@ li {
 .code-example-body pre code {
   color: var(--accent);
 }
+
+/* Page footer */
+.docs-page-footer {
+  margin-top: 3rem;
+  padding-top: 0;
+}
+
+.docs-footer-sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0 0 1rem 0;
+}
+
+.docs-footer-credit {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.docs-footer-credit a {
+  color: var(--text-muted);
+}
+
+.docs-footer-credit a:hover {
+  color: var(--accent);
+}
